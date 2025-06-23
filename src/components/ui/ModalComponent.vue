@@ -2,7 +2,7 @@
   <transition name="fade">
     <div
       v-if="show"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50"
       @click.self="$emit('close')"
     >
       <div class="bg-white rounded-xl p-8 shadow-lg max-w-sm w-full text-center animate-fade-in-down">
@@ -37,7 +37,7 @@ const props = defineProps({
   },
   type: {
     type: String,
-    default: 'success', 
+    default: 'success',
     validator: (value: string) => ['success', 'error', 'warning'].includes(value)
   },
   title: {

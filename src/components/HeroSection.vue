@@ -1,7 +1,7 @@
 <template>
   <section id="home" class="bg-white lg:grid lg:h-screen lg:place-content-center">
     <div
-      class="mx-auto w-screen max-w-screen-xl px-4 py-16 sm:px-6 sm:py-24 md:grid md:grid-cols-2 md:items-center md:gap-4 lg:px-8 lg:py-32"
+      class="mx-auto w-screen max-w-screen-xl px-4 py-22 sm:px-6 sm:py-24 md:grid md:grid-cols-2 md:items-center md:gap-4 lg:px-8 lg:py-32"
     >
       <!-- Texto -->
       <div class="max-w-prose text-left">
