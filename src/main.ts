@@ -5,15 +5,13 @@ import { createPinia } from 'pinia'
 import { VueReCaptcha } from 'vue-recaptcha-v3'
 import AOS from 'aos'
 
-
 import App from './App.vue'
 import router from './router'
 import 'aos/dist/aos.css'
 
-
 const app = createApp(App)
 app.use(VueReCaptcha, {
-  siteKey: '6LeV2G4rAAAAAIDXrdpt2-SNglW-kMLhtrpclv7P',
+  siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
 })
 
 AOS.init()
