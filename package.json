@@ -15,11 +15,14 @@
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
     "@tailwindcss/vite": "^4.1.10",
+    "@unhead/vue": "^2.0.11",
     "axios": "^1.10.0",
     "pinia": "^3.0.1",
     "tailwindcss": "^4.1.10",
     "vee-validate": "^4.15.1",
     "vue": "^3.5.13",
+    "vue-recaptcha": "^3.0.0-alpha.6",
+    "vue-recaptcha-v3": "^2.0.1",
     "vue-router": "^4.5.0",
     "yup": "^1.6.1"
   },
