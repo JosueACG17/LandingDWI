@@ -117,8 +117,8 @@ watch(() => recaptcha?.recaptchaLoaded?.value, (loaded) => {
   }
 });
 
-const textoTerminos = `Estos son los Términos y Condiciones ficticios...`;
-const textoAviso = `Este es un Aviso de Privacidad ficticio...`;
+const textoTerminos = `Términos y Condiciones Al utilizar este formulario, usted acepta que la información proporcionada es verídica y será utilizada únicamente para fines de contacto relacionados con los servicios ofrecidos por DWI. Nos reservamos el derecho de modificar estos términos en cualquier momento. El uso indebido del formulario podrá ser sancionado conforme a la legislación aplicable. Para más información sobre nuestros servicios, consulte nuestro sitio web oficial.`;
+const textoAviso = `Aviso de Privacidad DWI, con domicilio en México, es responsable del tratamiento de sus datos personales. Los datos recabados a través de este formulario serán utilizados exclusivamente para atender su solicitud de contacto y brindar información sobre nuestros servicios. No compartiremos su información con terceros sin su consentimiento, salvo obligación legal. Usted puede ejercer sus derechos de acceso, rectificación, cancelación u oposición enviando un correo a contacto@dwi.com.mx. Para conocer nuestro aviso de privacidad completo, visite nuestro sitio web.`;
 
 const schema = yup.object({
   name: yup.string()
