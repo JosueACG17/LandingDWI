@@ -9,7 +9,7 @@ import router from './router'
 
 const app = createApp(App)
 app.use(VueReCaptcha, {
-  siteKey: '6LeEzm4rAAAAAHcWBSYMJi1e2fNNSJ2QWj8o8fyX',
+  siteKey: '6LeV2G4rAAAAAIDXrdpt2-SNglW-kMLhtrpclv7P',
 })
 
 app.use(createPinia())
