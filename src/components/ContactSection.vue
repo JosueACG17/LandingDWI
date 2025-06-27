@@ -92,7 +92,8 @@ const onSubmit = async ({ values, resetForm: resetFormFn }: any) => {
       nombre: values.name,
       email: values.email,
       telefono: values.phone,
-      mensaje: values.message
+      mensaje: values.message,
+      captcha:values.captcha // Asegúrate de que este campo sea el correcto según tu formulario
     })
 
 

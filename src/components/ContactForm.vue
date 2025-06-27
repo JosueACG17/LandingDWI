@@ -166,7 +166,7 @@ const onSubmit = async (values: any, { resetForm }: any) => {
       messageType.value = 'error';
       return;
     }
-
+    values.captcha = recaptchaToken;
     emit('submit', { values, recaptchaToken, resetForm });
 
   } catch (error) {
