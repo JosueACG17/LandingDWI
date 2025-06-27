@@ -1,7 +1,7 @@
 <template>
   <section id="features" class="py-24 bg-gradient-to-b from-white to-indigo-50">
     <div class="container mx-auto px-6">
-      <h3 class="text-5xl font-extrabold text-center text-gray-800 mb-20 tracking-tight">
+      <h3 class="text-5xl font-extrabold text-center text-gray-800 mb-15 tracking-tight">
         ¿Qué ofrecemos?
       </h3>
       <div class="grid gap-12 md:grid-cols-3">
@@ -66,4 +66,3 @@
     </div>
   </section>
 </template>
-  

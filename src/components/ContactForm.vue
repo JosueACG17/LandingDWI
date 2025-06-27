@@ -1,5 +1,4 @@
 <template>
-  <!-- Formulario, se oculta cuando un modal está activo -->
   <div v-show="!mostrarTerminos && !mostrarAviso">
     <Form @submit="onSubmit" :validation-schema="schema" class="bg-white p-8 rounded-xl shadow-lg space-y-6 max-w-lg mx-auto my-8">
       <!-- Campo Nombre -->
@@ -53,7 +52,6 @@
             </button>
           </span>
         </label>
-        <div v-if="mostrarErrorPrivacidad" class="text-red-500 text-sm mt-1">Debes aceptar el aviso de privacidad para continuar.</div>
       </div>
 
       <!-- Feedback -->
@@ -63,7 +61,7 @@
 
       <!-- Botón de envío -->
       <button type="submit"
-        class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition w-full disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg"
+        class="cursor-pointer bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition w-full disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg"
         :disabled="isSubmitting || !privacidadAceptada">
         <span v-if="!isSubmitting">Enviar mensaje</span>
         <span v-else>Enviando...</span>
@@ -98,15 +96,14 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
-import * as yup from 'yup';
 import ModalComponent from '@/components/ui/ModalComponent.vue';
 import { useReCaptcha } from 'vue-recaptcha-v3';
+import { contactFormSchema } from '@/schemas/contactFormSchema';
 
 defineProps<{ isLoading: boolean }>();
 const emit = defineEmits(['submit']);
 
 const privacidadAceptada = ref(false);
-const mostrarErrorPrivacidad = ref(false);
 const mostrarTerminos = ref(false);
 const mostrarAviso = ref(false);
 const message = ref('');
@@ -124,37 +121,11 @@ watch(() => recaptcha?.recaptchaLoaded?.value, (loaded) => {
 const textoTerminos = `Términos y Condiciones Al utilizar este formulario, usted acepta que la información proporcionada es verídica y será utilizada únicamente para fines de contacto relacionados con los servicios ofrecidos por DWI. Nos reservamos el derecho de modificar estos términos en cualquier momento. El uso indebido del formulario podrá ser sancionado conforme a la legislación aplicable. Para más información sobre nuestros servicios, consulte nuestro sitio web oficial.`;
 const textoAviso = `Aviso de Privacidad DWI, con domicilio en México, es responsable del tratamiento de sus datos personales. Los datos recabados a través de este formulario serán utilizados exclusivamente para atender su solicitud de contacto y brindar información sobre nuestros servicios. No compartiremos su información con terceros sin su consentimiento, salvo obligación legal. Usted puede ejercer sus derechos de acceso, rectificación, cancelación u oposición enviando un correo a contacto@dwi.com.mx. Para conocer nuestro aviso de privacidad completo, visite nuestro sitio web.`;
 
-const schema = yup.object({
-  name: yup.string()
-    .required('El nombre es requerido')
-    .min(3, 'El nombre debe tener al menos 3 caracteres')
-    .max(50, 'El nombre no debe superar los 50 caracteres'),
-  email: yup.string()
-    .required('El correo electrónico es requerido')
-    .email('El correo no es válido'),
-  phone: yup.string()
-    .required('El teléfono es requerido')
-    .matches(/^\d+$/, 'El teléfono solo debe contener números')
-    .min(10, 'El teléfono debe tener al menos 10 dígitos')
-    .max(15, 'El teléfono no debe superar los 15 dígitos'),
-  message: yup.string()
-    .required('El mensaje es requerido')
-    .min(10, 'El mensaje debe tener al menos 10 caracteres')
-    .max(500, 'El mensaje no debe superar los 500 caracteres')
-})
+const schema = contactFormSchema;
 
 const onSubmit = async (values: any, { resetForm }: any) => {
   message.value = '';
   messageType.value = '';
-
-  if (!privacidadAceptada.value) {
-    mostrarErrorPrivacidad.value = true;
-    message.value = 'Debes aceptar el aviso de privacidad.';
-    messageType.value = 'error';
-    return;
-  }
-
-  mostrarErrorPrivacidad.value = false;
 
   try {
     if (!recaptcha || !recaptcha.executeRecaptcha) {
