@@ -2,15 +2,16 @@
   <div class="flex flex-col min-h-screen">
     <HeaderComponent />
 
-    <main class="flex-grow">
-      <HeroSection />
-      <FeaturesSection />
-      <ContactSection />
+    <main class="flex-grow space-y-16">
+      <div data-aos="fade-down"><HeroSection /></div>
+      <div data-aos="fade-up" data-aos-delay="200"><FeaturesSection /></div>
+      <div data-aos="fade-up" data-aos-delay="400"><ContactSection /></div>
     </main>
 
     <FooterComponent />
   </div>
 </template>
+
 
 <script setup lang="ts">
 import HeaderComponent from '@/layout/HeaderComponent.vue'

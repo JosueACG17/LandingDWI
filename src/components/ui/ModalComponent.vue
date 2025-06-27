@@ -1,29 +1,31 @@
 <template>
-  <transition name="fade">
-    <div
-      v-if="show"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-gray-100 "
-      @click.self="$emit('close')"
-    >
-      <div class="bg-white rounded-xl p-8 shadow-lg max-w-sm w-full text-center animate-fade-in-down">
-        <!-- Icono dinámico -->
-        <component
-          :is="statusIcon"
-          class="mx-auto mb-4 w-16 h-16"
-          :class="iconColor"
-        />
+  <teleport to="body">
+    <transition name="fade">
+      <div
+        v-if="show"
+        class="fixed inset-0 z-[9999] flex items-center justify-center bg-white"
+        @click.self="$emit('close')"
+      >
+        <div class="bg-white rounded-xl p-8 shadow-lg max-w-sm w-full text-center animate-fade-in-down">
+          <!-- Icono dinámico -->
+          <component
+            :is="statusIcon"
+            class="mx-auto mb-4 w-16 h-16"
+            :class="iconColor"
+          />
 
-        <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ title }}</h2>
-        <p class="text-gray-600 mb-4">{{ message }}</p>
-        <button
-          @click="$emit('close')"
-          class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer"
-        >
-          {{ buttonText }}
-        </button>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-2">{{ title }}</h2>
+          <p class="text-gray-600 mb-4">{{ message }}</p>
+          <button
+            @click="$emit('close')"
+            class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition cursor-pointer"
+          >
+            {{ buttonText }}
+          </button>
+        </div>
       </div>
-    </div>
-  </transition>
+    </transition>
+  </teleport>
 </template>
 
 <script setup lang="ts">
