@@ -3,18 +3,11 @@
     <div class=" mx-auto">
       <div class="bg-white shadow-xl rounded-lg border border-gray-200 overflow-hidden">
         <!-- Header -->
-        <header class="bg-gradient-to-r from-slate-800 to-slate-700 px-6 py-5">
+        <header class="bg-gradient-to-r from-blue-800 to-blue-700 px-6 py-5">
           <div class="flex items-center justify-between">
             <h2 class="text-xl font-bold text-white">{{ title }}</h2>
             <div class="flex items-center space-x-3">
-              <span class="text-slate-300 text-sm">{{ filteredRows.length }} registros</span>
-              <button
-                @click="clearAllFilters"
-                v-if="hasActiveFilters"
-                class="px-3 py-1 bg-slate-600 hover:bg-slate-500 text-white text-xs rounded-md transition-colors duration-200"
-              >
-                Limpiar filtros
-              </button>
+              <span class="text-white text-sm">{{ filteredRows.length }} registros</span>
             </div>
           </div>
         </header>
@@ -70,7 +63,6 @@
                       </div>
                       <div class="text-gray-500">
                         <p class="font-medium">No se encontraron resultados</p>
-                        <p class="text-sm">Intenta ajustar los filtros de búsqueda</p>
                       </div>
                     </div>
                   </td>
@@ -163,7 +155,6 @@ const props = withDefaults(defineProps<Props>(), {
   itemsPerPage: 10
 })
 
-// Reactive state
 const columnFilters = ref<Record<string, string>>({})
 const sortConfig = ref<{ key: string; direction: 'asc' | 'desc' | null }>({
   key: '',
@@ -171,7 +162,6 @@ const sortConfig = ref<{ key: string; direction: 'asc' | 'desc' | null }>({
 })
 const currentPage = ref(1)
 
-// Initialize filters
 watch(() => props.headers, (newHeaders) => {
   newHeaders.forEach(header => {
     if (!(header.key in columnFilters.value)) {
@@ -180,15 +170,10 @@ watch(() => props.headers, (newHeaders) => {
   })
 }, { immediate: true })
 
-// Computed properties
-const hasActiveFilters = computed(() => {
-  return Object.values(columnFilters.value).some(filter => filter.trim() !== '')
-})
 
 const filteredRows = computed(() => {
   let filtered = [...props.rows]
 
-  // Apply column filters
   Object.entries(columnFilters.value).forEach(([key, filterValue]) => {
     if (filterValue.trim()) {
       filtered = filtered.filter(row => {
@@ -198,7 +183,6 @@ const filteredRows = computed(() => {
     }
   })
 
-  // Apply sorting
   if (sortConfig.value.key && sortConfig.value.direction) {
     filtered.sort((a, b) => {
       const aVal = String(a[sortConfig.value.key] || '')
@@ -233,7 +217,6 @@ const visiblePages = computed(() => {
   return pages
 })
 
-// Methods
 const toggleSort = (key: string) => {
   if (sortConfig.value.key === key) {
     if (sortConfig.value.direction === 'asc') {
@@ -250,14 +233,6 @@ const toggleSort = (key: string) => {
   }
 }
 
-const clearAllFilters = () => {
-  Object.keys(columnFilters.value).forEach(key => {
-    columnFilters.value[key] = ''
-  })
-  sortConfig.value = { key: '', direction: null }
-  currentPage.value = 1
-}
-
 const previousPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--
@@ -270,7 +245,6 @@ const nextPage = () => {
   }
 }
 
-// Reset page when filters change
 watch([columnFilters, sortConfig], () => {
   currentPage.value = 1
 }, { deep: true })

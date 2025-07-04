@@ -41,12 +41,15 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import AdminSidebar from '@/views/Admin/Components/AdminSidebar.vue';
-import AdminTopbar from '@/views/Admin/Components/AdminTopbar.vue';
-import type { NavigationItem, Notification } from '@/types/LayoutAdmin';
+import { useRouter, useRoute } from 'vue-router'
+import AdminSidebar from '@/views/Admin/Components/AdminSidebar.vue'
+import AdminTopbar from '@/views/Admin/Components/AdminTopbar.vue'
+import type { NavigationItem, Notification } from '@/types/LayoutAdmin'
+
+const router = useRouter()
+const route = useRoute()
 
 const sidebarOpen = ref(false)
-const activeItem = ref('Dashboard')
 const openSubmenus = ref(['Analytics'])
 const showNotifications = ref(false)
 const showProfileMenu = ref(false)
@@ -57,7 +60,25 @@ const navigation = ref<NavigationItem[]>([
     name: 'Dashboard',
     icon: 'dashboard'
   },
+  {
+    name: 'Usuarios',
+    icon: 'users'
+  }
 ])
+
+const routeMap: Record<string, string> = {
+  'Dashboard': '/dashboard',
+  'Usuarios': '/users'
+}
+
+const pathMap: Record<string, string> = {
+  '/dashboard': 'Dashboard',
+  '/users': 'Usuarios'
+}
+
+const activeItem = computed(() => {
+  return pathMap[route.path] || ''
+})
 
 const notifications = ref<Notification[]>([
   { id: 1, title: 'Nuevo pedido recibido #1847', time: 'Hace 5 min', unread: true },
@@ -71,8 +92,8 @@ const unreadNotifications = computed(() =>
 )
 
 const setActiveItem = (itemName: string): void => {
-  activeItem.value = itemName
   sidebarOpen.value = false
+  router.push(routeMap[itemName] || '/dashboard')
 }
 
 const toggleNotifications = (): void => {
@@ -109,6 +130,7 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 </script>
+
 
 <style scoped>
 .overlay-enter-active,

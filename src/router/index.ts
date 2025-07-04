@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/Admin/LoginView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import DashboardView from '@/views/Admin/DashboardView.vue'
+import UsersView from '@/views/Admin/UsersView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +32,12 @@ const router = createRouter({
       component: DashboardView,
       meta: { layout: true },
     },
+    {
+      path: '/users',
+      name: 'users',
+      component: UsersView,
+      meta: { layout: true },
+    }
   ],
 })
 

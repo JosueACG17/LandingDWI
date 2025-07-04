@@ -21,27 +21,17 @@
     </div>
   </section>
 
-  <ModalComponent
-    :show="showSuccessModal"
-    type="success"
-    title="¡Mensaje enviado!"
-    message="Gracias por contactarnos, te responderemos pronto."
-    @close="showSuccessModal = false"
-  />
+  <ModalComponent :show="showSuccessModal" type="success" title="¡Mensaje enviado!"
+    message="Gracias por contactarnos, te responderemos pronto." @close="showSuccessModal = false" />
 
-  <ModalComponent
-    :show="showErrorModal"
-    type="error"
-    title="¡Error al enviar!"
-    message="Ha ocurrido un error al enviar el mensaje"
-    buttonText="Intentar de nuevo"
-    @close="showErrorModal = false"
-  />
+  <ModalComponent :show="showErrorModal" type="error" title="¡Error al enviar!"
+    message="Ha ocurrido un error al enviar el mensaje" buttonText="Intentar de nuevo"
+    @close="showErrorModal = false" />
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { sendMessage } from '@/api/message'
+import { sendMessage } from '@/services/message'
 import ContactForm from '@/components/ContactForm.vue'
 import ModalComponent from './ui/ModalComponent.vue'
 
