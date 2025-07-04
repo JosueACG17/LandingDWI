@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Sparkles, Shield } from 'lucide-vue-next'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/authStore'
+
+const router = useRouter()
+const authStore = useAuthStore()
 
 const showPassword = ref(false)
 const isLoading = ref(false)
@@ -11,10 +16,11 @@ const formData = reactive({
 
 const errors = reactive({
   email: '',
-  password: ''
+  password: '',
+  general: ''
 })
 
-const validateEmail = (email) => {
+const validateEmail = (email: string) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   return re.test(email)
 }
@@ -23,6 +29,7 @@ const handleSubmit = async () => {
   // Reset errors
   errors.email = ''
   errors.password = ''
+  errors.general = ''
 
   // Validate
   if (!formData.email) {
@@ -47,11 +54,21 @@ const handleSubmit = async () => {
 
   isLoading.value = true
 
-  // Simulate API call
-  setTimeout(() => {
+  try {
+    const success = await authStore.login(formData.email, formData.password)
+
+    if (success) {
+      // Redirigir al dashboard después de login exitoso
+      router.push('/dashboard')
+    } else {
+      errors.general = 'Credenciales incorrectas. Por favor, inténtalo de nuevo.'
+    }
+  } catch (error) {
+    console.error('Error en el login:', error)
+    errors.general = 'Ocurrió un error al iniciar sesión. Por favor, inténtalo más tarde.'
+  } finally {
     isLoading.value = false
-    alert('¡Login exitoso! 🎉')
-  }, 2000)
+  }
 }
 
 const togglePassword = () => {
@@ -118,7 +135,7 @@ const togglePassword = () => {
                   <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-400 rounded-xl flex items-center justify-center">
                     <Sparkles class="w-5 h-5 text-white" />
                   </div>
-                  <h1 class="text-2xl font-bold text-white">NexusAuth</h1>
+                  <h1 class="text-2xl font-bold text-white">LeadFlowCRM</h1>
                 </div>
                 <h2 class="text-2xl font-bold text-white mb-2">Iniciar Sesión</h2>
                 <p class="text-slate-300">Accede a tu cuenta</p>
@@ -130,6 +147,11 @@ const togglePassword = () => {
               </div>
 
               <form @submit.prevent="handleSubmit" class="space-y-6">
+                <!-- Error general -->
+                <div v-if="errors.general" class="p-3 bg-red-500/20 border border-red-500/30 rounded-lg">
+                  <p class="text-red-400 text-sm text-center">{{ errors.general }}</p>
+                </div>
+
                 <!-- Email field -->
                 <div class="space-y-2">
                   <label for="email" class="block text-sm font-medium text-slate-200">
@@ -185,7 +207,6 @@ const togglePassword = () => {
                   </div>
                   <p v-if="errors.password" class="text-red-400 text-sm">{{ errors.password }}</p>
                 </div>
-
 
                 <!-- Submit button -->
                 <button

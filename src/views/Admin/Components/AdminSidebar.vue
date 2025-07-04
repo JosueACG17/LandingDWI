@@ -94,8 +94,8 @@
           alt="Usuario"
         >
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-gray-900 truncate">Arbey Dzib</p>
-          <p class="text-xs text-gray-500 truncate">Admin</p>
+          <p class="text-sm font-medium text-gray-900 truncate">{{ authStore.user?.nombre }}</p>
+          <p class="text-xs text-gray-500 truncate">Administrador</p>
         </div>
         <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"/>
@@ -106,6 +106,9 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/authStore'
+
+const authStore = useAuthStore()
 
 interface NavigationItem {
   name: string;
