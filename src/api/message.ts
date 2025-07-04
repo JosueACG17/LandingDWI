@@ -1,7 +1,7 @@
 import axios from 'axios'
 import type { MessagePayload } from '@/interface/MessagePayload';
 
-const API_BASE = 'http://localhost:3000';
+const API_BASE = 'https://www.arbeydzib.lat';
 
 export const sendMessage = async (payload: MessagePayload) => {
   console.log('Sending message:', payload);
