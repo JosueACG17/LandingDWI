@@ -13,8 +13,7 @@ interface User {
 const user = ref<User | null>(null);
 
 export const authService = {
-  // Login
-  async login(email: string, password: string): Promise<User | null> {
+  async login(email: string, password: string): Promise<boolean> {
     try {
       const response = await genericRequest.post<{
         message: string;
@@ -24,16 +23,15 @@ export const authService = {
       if (response.user) {
         user.value = response.user;
         this.setAuthCookie(response.user.token);
-        return response.user;
+        return true;
       }
-      return null;
+      return false;
     } catch (error) {
       console.error('Login error:', error);
-      return null;
+      return false;
     }
   },
 
-  // Verificar token
   async verifyToken(): Promise<boolean> {
     const token = this.getAuthCookie();
     if (!token) return false;
@@ -41,7 +39,7 @@ export const authService = {
     try {
       const response = await genericRequest.post<{
         valid: boolean;
-        user: User;
+        user?: User;
       }>('/auth/verify-token', { token });
 
       if (response.valid && response.user) {
@@ -55,18 +53,16 @@ export const authService = {
     }
   },
 
-  // Obtener usuario actual
   getCurrentUser(): User | null {
     return user.value;
   },
 
-  // Cerrar sesión
   logout(): void {
     user.value = null;
     this.removeAuthCookie();
   },
 
-  // Manejo de cookies
+  // Helpers de cookies
   setAuthCookie(token: string): void {
     const expires = new Date();
     expires.setTime(expires.getTime() + 60 * 60 * 1000); // 1 hora
@@ -74,17 +70,13 @@ export const authService = {
   },
 
   getAuthCookie(): string | null {
-    const cookies = document.cookie.split(';');
-    for (const cookie of cookies) {
-      const [name, value] = cookie.trim().split('=');
-      if (name === 'jwt_token') {
-        return value;
-      }
-    }
-    return null;
+    return document.cookie
+      .split('; ')
+      .find(row => row.startsWith('jwt_token='))
+      ?.split('=')[1] || null;
   },
 
   removeAuthCookie(): void {
     document.cookie = 'jwt_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-  },
+  }
 };

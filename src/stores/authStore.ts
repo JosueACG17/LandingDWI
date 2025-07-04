@@ -1,49 +1,27 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import { authService } from '@/services/auth'
-
-interface User {
-  id: number
-  nombre: string
-  email: string
-  telefono?: string
-  token: string
-  expiresAt: string
-}
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+import { authService } from '@/services/auth';
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User | null>(null)
-  const isAuthenticated = ref(false)
+  const user = ref(authService.getCurrentUser());
+  const isAuthenticated = ref(!!user.value);
 
   const init = async () => {
-    const tokenValid = await authService.verifyToken()
-    isAuthenticated.value = tokenValid
-    if (tokenValid) {
-      user.value = authService.getCurrentUser()
-    }
-  }
+    isAuthenticated.value = await authService.verifyToken();
+    user.value = authService.getCurrentUser();
+  };
 
   const login = async (email: string, password: string) => {
-    const loggedInUser = await authService.login(email, password)
-    if (loggedInUser) {
-      user.value = loggedInUser
-      isAuthenticated.value = true
-      return true
-    }
-    return false
-  }
+    const success = await authService.login(email, password);
+    if (success) await init();
+    return success;
+  };
 
   const logout = () => {
-    authService.logout()
-    user.value = null
-    isAuthenticated.value = false
-  }
+    authService.logout();
+    user.value = null;
+    isAuthenticated.value = false;
+  };
 
-  return {
-    user,
-    isAuthenticated,
-    init,
-    login,
-    logout
-  }
-})
+  return { user, isAuthenticated, init, login, logout };
+});
