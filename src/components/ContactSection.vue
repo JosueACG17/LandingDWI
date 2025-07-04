@@ -60,13 +60,15 @@ onMounted(() => {
 })
 
 // Métodos
+const FORMSPREE_URL = 'https://formspree.io/f/xeokwjrg';
+
 const onSubmit = async ({ values, resetForm: resetFormFn }: any) => {
-  isLoading.value = true
+  isLoading.value = true;
 
   try {
     if (isFormBlocked.value) {
-      showErrorModal.value = true
-      return
+      showErrorModal.value = true;
+      return;
     }
 
     await sendMessage({
@@ -75,19 +77,34 @@ const onSubmit = async ({ values, resetForm: resetFormFn }: any) => {
       telefono: values.phone,
       mensaje: values.message,
       captcha: values.captcha
-    })
+    });
 
-    const now = Date.now()
-    localStorage.setItem('lastFormSubmission', now.toString())
-    lastSubmissionTime.value = now
-    resetFormFn()
-    showSuccessModal.value = true
+    await fetch(FORMSPREE_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        message: values.message
+      })
+    });
+
+    const now = Date.now();
+    localStorage.setItem('lastFormSubmission', now.toString());
+    lastSubmissionTime.value = now;
+    resetFormFn();
+    showSuccessModal.value = true;
 
   } catch (error) {
-    console.error('Error en el formulario:', error)
-    showErrorModal.value = true
+    console.error('Error en el formulario:', error);
+    showErrorModal.value = true;
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
+
 </script>
