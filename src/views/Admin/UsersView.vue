@@ -8,8 +8,7 @@
             <div class="flex items-center space-x-3">
               <button
                 class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
-                @click="showAddUserModal = true"
-              >
+                @click="showAddUserModal = true">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
@@ -17,8 +16,7 @@
               </button>
               <button
                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center"
-                @click="refreshUsers"
-              >
+                @click="refreshUsers">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -46,32 +44,18 @@
 
           <!-- Tabla -->
           <div class="bg-gray-50 border-2 border-gray-300 rounded-lg">
-            <TableComponent
-              title="Lista de Usuarios"
-              :headers="tableHeaders"
-              :rows="tableRows"
-              :loading="loading"
-            />
+            <TableComponent title="Lista de Usuarios" :headers="tableHeaders" :rows="tableRows" :loading="loading" />
           </div>
         </div>
       </div>
 
       <!-- Notificación -->
-<NotificationToast
-  v-model:show="showNotification"
-  :type="notification.type"
-  :message="notification.message"
-/>
+      <NotificationToast v-model:show="showNotification" :type="notification.type" :message="notification.message" />
 
 
       <!-- Modal agregar usuario -->
-      <AddUserModal
-        :show="showAddUserModal"
-        :existing-users="users"
-        @close="showAddUserModal = false"
-        @user-created="handleUserCreated"
-        @validation-error="handleValidationError"
-      />
+      <AddUserModal :show="showAddUserModal" :existing-users="users" @close="showAddUserModal = false"
+        @user-created="handleUserCreated" @validation-error="handleValidationError" />
     </main>
   </AdminLayout>
 </template>

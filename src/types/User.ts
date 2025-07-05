@@ -10,5 +10,5 @@ export interface UserPayload {
   nombre: string;
   email: string;
   telefono: string;
-  password: string;
+  password?: string;
 }

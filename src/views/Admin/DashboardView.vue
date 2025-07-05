@@ -296,7 +296,7 @@ const handleStatusChange = async (data: { rowId: string; actionValue: string }) 
   try {
     loading.value = true;
     const { rowId, actionValue } = data;
-    await updateMessageStatus(rowId, { validate_view: actionValue });
+await updateMessageStatus(Number(rowId), { validate_view: actionValue });
     triggerNotification('success', 'Estado del mensaje actualizado correctamente');
     await loadMessages();
   } catch (error) {

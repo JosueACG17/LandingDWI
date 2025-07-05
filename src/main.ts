@@ -13,11 +13,13 @@ const pinia = createPinia();
 
 app.use(VueReCaptcha, {
   siteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
+  loaderOptions: {
+  },
 });
 
 AOS.init();
 app.use(pinia);
 app.use(router);
-app.use(authInit); 
+app.use(authInit);
 
 app.mount('#app');
