@@ -159,10 +159,18 @@
               :headers="tableHeaders"
               :rows="filteredMessages"
               :loading="loading"
+              @action-clicked="handleStatusChange"
             />
           </div>
         </div>
       </div>
+      <!-- Notificación -->
+<NotificationToast
+  v-model:show="showNotification"
+  :type="notification.type"
+  :message="notification.message"
+/>
+
     </main>
   </AdminLayout>
 </template>
@@ -171,27 +179,48 @@
 import { ref, onMounted, computed } from 'vue';
 import AdminLayout from '@/layout/AdminLayout.vue';
 import TableComponent from '@/components/TableComponent.vue';
-import { getMessages } from '@/services/message';
+import { getMessages, updateMessageStatus } from '@/services/message';
 import type { Message } from '@/types/MessagePayload';
 import { useAuthStore } from '@/stores/authStore'
+import NotificationToast from '@/components/NotificationToast.vue'
+
 
 const authStore = useAuthStore();
 const loading = ref(true);
 const messages = ref<Message[]>([]);
 const statusFilter = ref('all');
+const showNotification = ref(false)
+const notification = ref<{ type: 'success' | 'error'; message: string }>({ type: 'success', message: '' })
+
+const triggerNotification = (type: 'success' | 'error', message: string) => {
+  notification.value = { type, message }
+  showNotification.value = true
+}
+
+
 
 const tableHeaders = [
   { label: 'Nombre', key: 'nombre' },
   { label: 'Email', key: 'email' },
   { label: 'Teléfono', key: 'telefono' },
   { label: 'Mensaje', key: 'mensaje' },
-  { label: 'Estado', key: 'status' },
+  {
+    label: 'Estado',
+    key: 'status',
+    actions: [
+      { label: 'Marcar como Contactado', value: 'CONTACTADO', class: 'text-green-600 hover:bg-green-50' },
+      { label: 'Marcar como Descartado', value: 'DESCARTADO', class: 'text-red-600 hover:bg-red-50' },
+      { label: 'Marcar como Nuevo', value: 'NUEVO', class: 'text-blue-600 hover:bg-blue-50' }
+    ]
+  },
   { label: 'Fecha', key: 'createdAt' }
 ];
 
 // Mensajes filtrados por estado
 const filteredMessages = computed(() => {
   const allMessages = messages.value.map(message => ({
+    ...message,
+    id: message.id, // Asegurarnos de incluir el ID
     nombre: message.nombre,
     email: `<a href="mailto:${message.email}" class="text-blue-600 hover:underline">${message.email}</a>`,
     telefono: message.telefono ? `<a href="tel:${message.telefono}" class="text-blue-600 hover:underline">${message.telefono}</a>` : 'N/A',
@@ -260,6 +289,22 @@ const formatDate = (dateString: string) => {
     minute: '2-digit'
   };
   return new Date(dateString).toLocaleDateString('es-ES', options);
+};
+
+// Función para cambiar el estado de un mensaje
+const handleStatusChange = async (data: { rowId: string; actionValue: string }) => {
+  try {
+    loading.value = true;
+    const { rowId, actionValue } = data;
+    await updateMessageStatus(rowId, { validate_view: actionValue });
+    triggerNotification('success', 'Estado del mensaje actualizado correctamente');
+    await loadMessages();
+  } catch (error) {
+    console.error('Error updating message status:', error);
+    triggerNotification('error', 'Hubo un error al actualizar el mensaje');
+  } finally {
+    loading.value = false;
+  }
 };
 
 // Función para cargar mensajes

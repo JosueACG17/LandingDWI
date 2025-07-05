@@ -24,7 +24,6 @@
 
         <!-- Table Content -->
         <div v-else class="overflow-hidden">
-
           <!-- Table -->
           <div class="overflow-x-auto">
             <table class="w-full">
@@ -80,7 +79,33 @@
                     class="px-6 py-4 whitespace-nowrap"
                     :class="header.align === 'center' ? 'text-center' : 'text-left'"
                   >
-                    <div class="text-sm text-gray-900 font-medium" v-html="row[header.key]"></div>
+                    <div v-if="!header.actions" class="text-sm text-gray-900 font-medium" v-html="row[header.key]"></div>
+                    <div v-else class="relative">
+                      <button
+                        @click.stop="toggleDropdown(rowIndex)"
+                        class="flex items-center space-x-1 text-sm text-gray-900 font-medium"
+                      >
+                        <span v-html="row[header.key]"></span>
+                        <ChevronDown class="w-4 h-4" />
+                      </button>
+
+                      <!-- Dropdown menu -->
+                      <div
+                        v-if="activeDropdown === rowIndex"
+                        class="absolute z-50 mt-1 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-200"
+                        @click.stop
+                      >
+                        <button
+                          v-for="(action, actionIndex) in header.actions"
+                          :key="actionIndex"
+                          @click="handleActionClick(row, action)"
+                          class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors"
+                          :class="action.class"
+                        >
+                          {{ action.label }}
+                        </button>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -136,10 +161,17 @@
 import { ref, computed, watch } from 'vue'
 import { Search, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
+interface Action {
+  label: string
+  value: string
+  class?: string
+}
+
 interface Header {
   label: string
   key: string
   align?: 'left' | 'center'
+  actions?: Action[]
 }
 
 interface Props {
@@ -155,12 +187,35 @@ const props = withDefaults(defineProps<Props>(), {
   itemsPerPage: 10
 })
 
+const emit = defineEmits(['action-clicked'])
+
 const columnFilters = ref<Record<string, string>>({})
 const sortConfig = ref<{ key: string; direction: 'asc' | 'desc' | null }>({
   key: '',
   direction: null
 })
 const currentPage = ref(1)
+const activeDropdown = ref<number | null>(null)
+
+const toggleDropdown = (rowIndex: number) => {
+  activeDropdown.value = activeDropdown.value === rowIndex ? null : rowIndex
+}
+
+const handleActionClick = (row: any, action: Action) => {
+  emit('action-clicked', {
+    rowId: row.id,
+    actionValue: action.value
+  })
+  activeDropdown.value = null
+}
+
+// Cerrar dropdown al hacer clic fuera
+const closeDropdown = () => {
+  activeDropdown.value = null
+}
+
+// Agregar event listener para cerrar dropdown
+document.addEventListener('click', closeDropdown)
 
 watch(() => props.headers, (newHeaders) => {
   newHeaders.forEach(header => {
@@ -169,7 +224,6 @@ watch(() => props.headers, (newHeaders) => {
     }
   })
 }, { immediate: true })
-
 
 const filteredRows = computed(() => {
   let filtered = [...props.rows]
