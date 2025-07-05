@@ -1,26 +1,27 @@
 <template>
   <AdminLayout>
     <main class="flex-1 overflow-y-auto p-4">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-900 text-center">¡Bienvenido de nuevo, {{ authStore.user?.nombre }}!</h1>
+      </div>
       <div class="mx-auto">
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-900">Mensajes de Contacto</h1>
-            <div class="flex items-center space-x-3">
-              <button
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                @click="refreshMessages">
-                <div class="flex items-center">
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  Actualizar
-                </div>
-              </button>
-            </div>
+            <button
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              @click="refreshMessages">
+              <div class="flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Actualizar
+              </div>
+            </button>
           </div>
 
-          <!-- Stats Cards (opcional, puedes mantenerlas o quitarlas) -->
+          <!-- Stats Cards -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
               <div class="flex items-center justify-between">
@@ -70,9 +71,95 @@
             </div>
           </div>
 
+          <!-- Filtros con botones -->
+          <div class="flex flex-wrap gap-2 mb-4 ">
+            <button
+              @click="statusFilter = 'all'"
+              :class="{
+                'bg-gray-900 text-white': statusFilter === 'all',
+                'bg-gray-100 text-gray-700 hover:bg-gray-200': statusFilter !== 'all'
+              }"
+              class="px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center"
+            >
+              <span class="w-2 h-2 rounded-full bg-gray-500 mr-2"></span>
+              Todos
+              <span class="ml-1 bg-gray-200 text-gray-700 rounded-full px-2 py-0.5 text-xs">
+                {{ stats.totalAllMessages }}
+              </span>
+            </button>
+
+            <button
+              @click="statusFilter = 'NUEVO'"
+              :class="{
+                'bg-blue-600 text-white': statusFilter === 'NUEVO',
+                'bg-blue-100 text-blue-700 hover:bg-blue-200': statusFilter !== 'NUEVO'
+              }"
+              class="px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center"
+            >
+              <span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
+              Nuevos
+              <span
+                :class="{
+                  'bg-blue-100 text-blue-800': statusFilter !== 'NUEVO',
+                  'bg-white text-blue-600': statusFilter === 'NUEVO'
+                }"
+                class="ml-1 rounded-full px-2 py-0.5 text-xs"
+              >
+                {{ stats.totalNewMessages }}
+              </span>
+            </button>
+
+            <button
+              @click="statusFilter = 'CONTACTADO'"
+              :class="{
+                'bg-green-600 text-white': statusFilter === 'CONTACTADO',
+                'bg-green-100 text-green-700 hover:bg-green-200': statusFilter !== 'CONTACTADO'
+              }"
+              class="px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center"
+            >
+              <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+              Contactados
+              <span
+                :class="{
+                  'bg-green-100 text-green-800': statusFilter !== 'CONTACTADO',
+                  'bg-white text-green-600': statusFilter === 'CONTACTADO'
+                }"
+                class="ml-1 rounded-full px-2 py-0.5 text-xs"
+              >
+                {{ stats.totalContactedMessages }}
+              </span>
+            </button>
+
+            <button
+              @click="statusFilter = 'DESCARTADO'"
+              :class="{
+                'bg-red-600 text-white': statusFilter === 'DESCARTADO',
+                'bg-red-100 text-red-700 hover:bg-red-200': statusFilter !== 'DESCARTADO'
+              }"
+              class="px-4 py-2 rounded-full text-sm font-medium transition-colors flex items-center"
+            >
+              <span class="w-2 h-2 rounded-full bg-red-500 mr-2"></span>
+              Descartados
+              <span
+                :class="{
+                  'bg-red-100 text-red-800': statusFilter !== 'DESCARTADO',
+                  'bg-white text-red-600': statusFilter === 'DESCARTADO'
+                }"
+                class="ml-1 rounded-full px-2 py-0.5 text-xs"
+              >
+                {{ stats.totalDiscardedMessages }}
+              </span>
+            </button>
+          </div>
+
           <!-- Tabla de mensajes -->
           <div class="bg-gray-50 border-2 border-gray-300 rounded-lg">
-            <TableComponent title="Lista de Mensajes" :headers="tableHeaders" :rows="tableRows" :loading="loading" />
+            <TableComponent
+              title="Lista de Mensajes"
+              :headers="tableHeaders"
+              :rows="filteredMessages"
+              :loading="loading"
+            />
           </div>
         </div>
       </div>
@@ -84,23 +171,67 @@
 import { ref, onMounted, computed } from 'vue';
 import AdminLayout from '@/layout/AdminLayout.vue';
 import TableComponent from '@/components/TableComponent.vue';
-import { getMessages, type Message } from '@/services/message';
+import { getMessages } from '@/services/message';
+import type { Message } from '@/types/MessagePayload';
+import { useAuthStore } from '@/stores/authStore'
 
+const authStore = useAuthStore();
 const loading = ref(true);
 const messages = ref<Message[]>([]);
+const statusFilter = ref('all');
 
 const tableHeaders = [
   { label: 'Nombre', key: 'nombre' },
   { label: 'Email', key: 'email' },
   { label: 'Teléfono', key: 'telefono' },
   { label: 'Mensaje', key: 'mensaje' },
+  { label: 'Estado', key: 'status' },
   { label: 'Fecha', key: 'createdAt' }
 ];
 
-// Estadísticas computadas (simplificadas)
+// Mensajes filtrados por estado
+const filteredMessages = computed(() => {
+  const allMessages = messages.value.map(message => ({
+    nombre: message.nombre,
+    email: `<a href="mailto:${message.email}" class="text-blue-600 hover:underline">${message.email}</a>`,
+    telefono: message.telefono ? `<a href="tel:${message.telefono}" class="text-blue-600 hover:underline">${message.telefono}</a>` : 'N/A',
+    mensaje: message.mensaje.length > 50 ? `${message.mensaje.substring(0, 50)}...` : message.mensaje,
+    status: getStatusBadge(message.validate_view || 'NUEVO'),
+    createdAt: formatDate(message.createdAt),
+    rawStatus: message.validate_view || 'NUEVO'
+  }));
+
+  if (statusFilter.value === 'all') {
+    return allMessages;
+  }
+  return allMessages.filter(msg => msg.rawStatus === statusFilter.value);
+});
+
+// Función para mostrar el estado con un badge de color
+const getStatusBadge = (status: string) => {
+  const statusMap: Record<string, { class: string, text: string }> = {
+    'NUEVO': { class: 'bg-blue-100 text-blue-800', text: 'Nuevo' },
+    'CONTACTADO': { class: 'bg-green-100 text-green-800', text: 'Contactado' },
+    'DESCARTADO': { class: 'bg-red-100 text-red-800', text: 'Descartado' }
+  };
+
+  const statusInfo = statusMap[status] || { class: 'bg-gray-100 text-gray-800', text: status };
+  return `<span class="px-2 py-1 text-xs font-medium rounded-full ${statusInfo.class}">${statusInfo.text}</span>`;
+};
+
+// Estadísticas computadas
 const stats = computed(() => {
-  const totalMessages = messages.value.length;
-  const messagesToday = messages.value.filter(msg => {
+  const totalAllMessages = messages.value.length;
+  const totalNewMessages = messages.value.filter(msg => !msg.validate_view || msg.validate_view === 'NUEVO').length;
+  const totalContactedMessages = messages.value.filter(msg => msg.validate_view === 'CONTACTADO').length;
+  const totalDiscardedMessages = messages.value.filter(msg => msg.validate_view === 'DESCARTADO').length;
+
+  const filtered = statusFilter.value === 'all'
+    ? messages.value
+    : messages.value.filter(msg => msg.validate_view === statusFilter.value);
+
+  const totalMessages = filtered.length;
+  const messagesToday = filtered.filter(msg => {
     const msgDate = new Date(msg.createdAt);
     const today = new Date();
     return msgDate.getDate() === today.getDate() &&
@@ -111,19 +242,12 @@ const stats = computed(() => {
   return {
     totalMessages,
     messagesToday,
-    dailyAverage: Math.round(totalMessages / 7)
+    dailyAverage: Math.round(messages.value.length / 7),
+    totalAllMessages,
+    totalNewMessages,
+    totalContactedMessages,
+    totalDiscardedMessages
   };
-});
-
-// Filas de la tabla computadas
-const tableRows = computed(() => {
-  return messages.value.map(message => ({
-    nombre: message.nombre,
-    email: `<a href="mailto:${message.email}" class="text-blue-600 hover:underline">${message.email}</a>`,
-    telefono: message.telefono ? `<a href="tel:${message.telefono}" class="text-blue-600 hover:underline">${message.telefono}</a>` : 'N/A',
-    mensaje: message.mensaje.length > 50 ? `${message.mensaje.substring(0, 50)}...` : message.mensaje,
-    createdAt: formatDate(message.createdAt)
-  }));
 });
 
 // Función para formatear la fecha

@@ -18,3 +18,22 @@ export const contactFormSchema = yup.object({
     .min(10, 'El mensaje debe tener al menos 10 caracteres')
     .max(500, 'El mensaje no debe superar los 500 caracteres')
 });
+
+export const userFormSchema = yup.object({
+  nombre: yup.string()
+    .required('El nombre es requerido')
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
+    .max(50, 'El nombre no debe superar los 50 caracteres'),
+  email: yup.string()
+    .required('El correo electrónico es requerido')
+    .email('El correo no es válido'),
+  telefono: yup.string()
+    .nullable()
+    .matches(/^[0-9]+$/, 'El teléfono solo debe contener números')
+    .min(10, 'El teléfono debe tener al menos 10 dígitos')
+    .max(15, 'El teléfono no debe superar los 15 dígitos'),
+  password: yup.string()
+    .required('La contraseña es requerida')
+    .min(6, 'La contraseña debe tener al menos 6 caracteres')
+    .max(50, 'La contraseña no debe superar los 50 caracteres')
+});

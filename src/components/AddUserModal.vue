@@ -41,9 +41,10 @@
                     type="text"
                     id="nombre"
                     v-model="form.nombre"
-                    required
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                    :class="{ 'border-red-500': errors.nombre }"
                   />
+                  <p v-if="errors.nombre" class="mt-1 text-sm text-red-600">{{ errors.nombre }}</p>
                 </div>
 
                 <div>
@@ -52,9 +53,10 @@
                     type="email"
                     id="email"
                     v-model="form.email"
-                    required
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                    :class="{ 'border-red-500': errors.email }"
                   />
+                  <p v-if="errors.email" class="mt-1 text-sm text-red-600">{{ errors.email }}</p>
                 </div>
 
                 <div>
@@ -64,7 +66,9 @@
                     id="telefono"
                     v-model="form.telefono"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+                    :class="{ 'border-red-500': errors.telefono }"
                   />
+                  <p v-if="errors.telefono" class="mt-1 text-sm text-red-600">{{ errors.telefono }}</p>
                 </div>
 
                 <div>
@@ -74,9 +78,8 @@
                       :type="showPassword ? 'text' : 'password'"
                       id="password"
                       v-model="form.password"
-                      required
-                      minlength="6"
                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 pr-10"
+                      :class="{ 'border-red-500': errors.password }"
                     />
                     <button
                       type="button"
@@ -122,6 +125,7 @@
                       </svg>
                     </button>
                   </div>
+                  <p v-if="errors.password" class="mt-1 text-sm text-red-600">{{ errors.password }}</p>
                 </div>
 
                 <div class="flex justify-end space-x-3 pt-4">
@@ -161,6 +165,8 @@ import { ref } from 'vue';
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from '@headlessui/vue';
 import { createUser } from '@/services/user';
 import type { UserPayload } from '@/types/User';
+import { userFormSchema } from '@/schemas/FormSchema';
+import * as yup from 'yup';
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -171,6 +177,7 @@ const emit = defineEmits(['close', 'user-created', 'validation-error']);
 
 const loading = ref(false);
 const showPassword = ref(false);
+const errors = ref<Record<string, string>>({});
 
 const form = ref<UserPayload>({
   nombre: '',
@@ -192,9 +199,35 @@ const resetForm = () => {
     telefono: '',
     password: ''
   };
+  errors.value = {};
 };
 
+const validateForm = async () => {
+  try {
+    await userFormSchema.validate(form.value, { abortEarly: false });
+    errors.value = {};
+    return true;
+  } catch (err: unknown) {
+    if (err instanceof yup.ValidationError) {
+      const errorMessages: Record<string, string> = {};
+      err.inner.forEach(error => {
+        if (error.path) {
+          errorMessages[error.path] = error.message;
+        }
+      });
+      errors.value = errorMessages;
+    } else {
+      console.error('Error desconocido al validar el formulario', err);
+    }
+    return false;
+  }
+};
+
+
 const submitForm = async () => {
+  const isValid = await validateForm();
+  if (!isValid) return;
+
   const emailExists = props.existingUsers.some(
     u => u.email.toLowerCase() === form.value.email.toLowerCase()
   );
@@ -213,7 +246,6 @@ const submitForm = async () => {
   } catch (error) {
     console.error('Error creating user:', error);
     emit('validation-error', 'Ocurrió un error al crear el usuario');
-    closeModal();
   } finally {
     loading.value = false;
   }

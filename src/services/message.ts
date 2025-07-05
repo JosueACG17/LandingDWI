@@ -21,3 +21,12 @@ export const getMessages = async (): Promise<Message[]> => {
     throw error;
   }
 };
+
+export const updateMessageStatus = async (id: number, payload: { validate_view: string }): Promise<Message> => {
+  try {
+    return await genericRequest.put<Message>(`/message/${id}`, payload);
+  } catch (error) {
+    console.error('Error updating message status:', error);
+    throw error;
+  }
+};

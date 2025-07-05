@@ -1,5 +1,5 @@
-import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, {isAxiosError}  from 'axios';
 
 class GenericRequest {
   private instance: AxiosInstance;
@@ -9,7 +9,7 @@ class GenericRequest {
       baseURL: 'http://localhost:3000',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        Accept: 'application/json'
       }
     });
   }
@@ -18,26 +18,35 @@ class GenericRequest {
     try {
       const response: AxiosResponse<T> = await this.instance.get(url, config);
       return response.data;
-    } catch (error: any) {
-      throw error.response?.data || error.message || 'Error en la petición GET';
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        throw error.response?.data ?? error.message ?? 'Error en la petición GET';
+      }
+      throw 'Error desconocido en la petición GET';
     }
   }
 
-  public async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  public async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     try {
       const response: AxiosResponse<T> = await this.instance.post(url, data, config);
       return response.data;
-    } catch (error: any) {
-      throw error.response?.data || error.message || 'Error en la petición POST';
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        throw error.response?.data ?? error.message ?? 'Error en la petición POST';
+      }
+      throw 'Error desconocido en la petición POST';
     }
   }
 
-  public async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  public async put<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
     try {
       const response: AxiosResponse<T> = await this.instance.put(url, data, config);
       return response.data;
-    } catch (error: any) {
-      throw error.response?.data || error.message || 'Error en la petición PUT';
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        throw error.response?.data ?? error.message ?? 'Error en la petición PUT';
+      }
+      throw 'Error desconocido en la petición PUT';
     }
   }
 
@@ -45,8 +54,11 @@ class GenericRequest {
     try {
       const response: AxiosResponse<T> = await this.instance.delete(url, config);
       return response.data;
-    } catch (error: any) {
-      throw error.response?.data || error.message || 'Error en la petición DELETE';
+    } catch (error: unknown) {
+      if (isAxiosError(error)) {
+        throw error.response?.data ?? error.message ?? 'Error en la petición DELETE';
+      }
+      throw 'Error desconocido en la petición DELETE';
     }
   }
 }

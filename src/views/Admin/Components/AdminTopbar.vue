@@ -35,8 +35,7 @@
           <button @click="$emit('toggle-profile')"
             class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
             <img class="w-8 h-8 rounded-full object-cover"
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/250px-User_icon_2.svg.png"
-              alt="Profile">
+              :src="Perfil" alt="Profile">
             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
@@ -77,6 +76,7 @@
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 import type { Notification } from '@/types/LayoutAdmin';
+import Perfil from '@/assets/img/Perfill.jpeg'
 
 const props = defineProps({
   activeItem: {

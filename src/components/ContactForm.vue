@@ -98,7 +98,7 @@ import { ref, watch } from 'vue';
 import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
 import ModalComponent from '@/components/ui/ModalComponent.vue';
 import { useReCaptcha } from 'vue-recaptcha-v3';
-import { contactFormSchema } from '@/schemas/contactFormSchema';
+import { contactFormSchema } from '@/schemas/FormSchema';
 
 defineProps<{ isLoading: boolean }>();
 const emit = defineEmits(['submit']);

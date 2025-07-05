@@ -13,5 +13,6 @@ export interface Message {
   telefono: string;
   mensaje: string;
   validate_captcha: number;
+  validate_view: string;
   createdAt: string;
 }

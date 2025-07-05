@@ -14,7 +14,7 @@
             <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
           </svg>
         </div>
-        <span class="text-xl font-bold text-gray-900">LeadFlowCRM</span>
+        <span class="text-xl font-bold text-gray-900">MiniCRM</span>
       </div>
       <button
         @click="$emit('toggle')"
@@ -90,8 +90,7 @@
       <div class="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
         <img
           class="w-10 h-10 rounded-full object-cover ring-2 ring-white"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/250px-User_icon_2.svg.png"
-          alt="Usuario"
+          :src="Perfil" alt="Foto de perfil"
         >
         <div class="flex-1 min-w-0">
           <p class="text-sm font-medium text-gray-900 truncate">{{ authStore.user?.nombre }}</p>
@@ -107,6 +106,7 @@
 
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore'
+import Perfil from '@/assets/img/Perfill.jpeg'
 
 const authStore = useAuthStore()
 

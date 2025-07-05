@@ -5,7 +5,6 @@ export function useAuthValidation() {
   let intervalId: number | null = null
 
   const startValidation = () => {
-    // Verificar cada 5 minutos
     intervalId = setInterval(async () => {
       await authService.verifyToken()
     }, 5 * 60 * 1000) as unknown as number
